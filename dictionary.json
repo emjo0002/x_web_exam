@@ -1,0 +1,167 @@
+{
+    "login": {
+        "english": "Log in",
+        "danish": "Log ind",
+        "spanish": "Entrar"
+    },
+    "dont_have_an_account": {
+        "english": "Dont have an account",
+        "danish": "Har du ikke en konto",
+        "spanish": "No tienes cuenta"
+    },
+    "email": {
+        "english": "Email",
+        "danish": "E-mail",
+        "spanish": "Correo electrónico"
+    },
+    "password": {
+        "english": "Password",
+        "danish": "Kodeord",
+        "spanish": "Cláve"
+    },
+    "signup": {
+        "english": "Sign up",
+        "danish": "Opret profil",
+        "spanish": "Inscribirse"
+    },
+    "username": {
+        "english": "Username",
+        "danish": "Brugernavn",
+        "spanish": "Nombre de usuario"
+    },
+    "to": {
+        "english": "to",
+        "danish": "til",
+        "spanish": "a"
+    },
+    "characters": {
+        "english": "Characters",
+        "danish": "Tegn",
+        "spanish": "Caracteres"
+    },
+    "invalid_credentials": {
+        "english": "Invalid credentials",
+        "danish": "Ugyldige loginoplysninger",
+        "spanish": "Información incorrecta"
+    },
+    "user_not_verified": {
+        "english": "User not verified. Please check your email",
+        "danish": "Bruger ikke verificeret. Tjek venligst din e-mail",
+        "spanish": "Usuario no verificado. Por favor, chequéa tu email"
+    },
+    "user_not_found": {
+        "english": "User not found",
+        "danish": "Bruger ikke fundet",
+        "spanish": "Usuario no encontrado"
+    },
+    "invalid_password": {
+        "english": "Invalid password",
+        "danish": "Ugyldig pinkode",
+        "spanish": "Clave inválida"
+    },
+    "invalid_email": {
+        "english": "Invalid email",
+        "danish": "Ugyldig e-mail",
+        "spanish": "Correo electrónico inválido"
+    },
+    "system_under_maintenance": {
+        "english": "System under maintenance",
+        "danish": "Systemet er under vedligeholdelse",
+        "spanish": "El sistema está en mantenimiento"
+    },
+    "first_name": {
+        "english": "First name",
+        "danish": "Fornavn",
+        "spanish": "Nombre"
+    },
+    "last_name": {
+        "english": "Last name",
+        "danish": "Efternavn",
+        "spanish": "Apellido"
+    },
+    "updating_profile": {
+        "english": "Updating profile ...",
+        "danish": "Opdatere profil ...",
+        "spanish": "Actualizar perfil ..."
+    },
+    "profile_updated_successfully": {
+        "english": "Profile updated successfully",
+        "danish": "Din profil er opdateret",
+        "spanish": "Actualizar perfil"
+    },
+    "email_already_registered": {
+        "english": "Email already registered",
+        "danish": "Email er allerede registreret",
+        "spanish": "El correo electrónico ya está registrado"
+    },
+    "username_already_registered": {
+        "english": "Username already registered",
+        "danish": "Brugernavn er allerede registreret",
+        "spanish": "El nombre de usuario ya está registrado"
+    },
+    "home": {
+        "english": "Home",
+        "danish": "Hjem",
+        "spanish": "Casa"
+    },
+    "explore": {
+        "english": "Explore",
+        "danish": "Udforsk",
+        "spanish": "Explorar"
+    },
+    "notifications": {
+        "english": "Notifications",
+        "danish": "Notifikationer",
+        "spanish": "Notificaciones"
+    },
+    "message": {
+        "english": "Message",
+        "danish": "Beskeder",
+        "spanish": "Mensajes"
+    },
+    "bookmarks": {
+        "english": "Bookmarks",
+        "danish": "Bogmærker",
+        "spanish": "Marcadores"
+    },
+    "jobs": {
+        "english": "Jobs",
+        "danish": "Job",
+        "spanish": "Empleos"
+    },
+    "communities": {
+        "english": "Communities",
+        "danish": "Fællesskaber",
+        "spanish": "Comunidades"
+    },
+    "profile": {
+        "english": "Profile",
+        "danish": "Profil",
+        "spanish": "Perfil"
+    },
+    "more": {
+        "english": "More",
+        "danish": "Mere",
+        "spanish": "Más"
+    },
+    "logout": {
+        "english": "Logout",
+        "danish": "Log ud",
+        "spanish": "Cerrar sesión"
+    },
+    "have_an_account": {
+        "english": "Have an account",
+        "danish": "Har du en konto",
+        "spanish": "Tienes cuenta"
+    },
+    "update_profile": {
+        "english": "Update profile",
+        "danish": "Opdater profil",
+        "spanish": "Actualizar perfil"
+    },
+    "logging_in": {
+        "english": "Logging in ...",
+        "danish": "Logger ind ...",
+        "spanish": "Entrar ..."
+    }
+}
