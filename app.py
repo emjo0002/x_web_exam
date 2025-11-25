@@ -255,7 +255,7 @@ def home_comp():
         tweets = cursor.fetchall()
         ic(tweets)
 
-        html = render_template("_home_comp.html", tweets=tweets)
+        html = render_template("_home_comp.html", tweets=tweets, user=user)
         return f"""<mixhtml mix-update="main">{ html }</mixhtml>"""
     except Exception as ex:
         ic(ex)
@@ -361,10 +361,39 @@ def api_update_profile():
     try:
 
         user = session.get("user", "")
-        lan = session["user"]["user_language"]
         if not user: return "invalid user"
 
-        # Validate
+        # If only uploading a new avatar, keep it minimal
+        file = request.files.get("avatar")
+        if file and file.filename:
+            from werkzeug.utils import secure_filename
+            allowed = {"jpg", "jpeg", "png", "webp"}
+            filename = secure_filename(file.filename)
+            if "." not in filename or filename.rsplit(".", 1)[1].lower() not in allowed:
+                return "Invalid image format", 400
+            save_path = os.path.join("static", "images", filename)
+            file.save(save_path)
+
+            # Update DB avatar only
+            db, cursor = x.db()
+            q = "UPDATE users SET user_avatar_path = %s WHERE user_pk = %s"
+            cursor.execute(q, (filename, user["user_pk"]))
+            db.commit()
+
+            # Update session and respond with minimal DOM updates
+            session["user"]["user_avatar_path"] = filename
+            new_src = url_for('static', filename=f"images/{filename}") + f"?v={int(time.time())}"
+            toast_ok = render_template("___toast_ok.html", message=x.lans("profile_updated_successfully"))
+            nav_html = render_template("___nav_profile_tag.html", user=session["user"])    
+            return f"""
+                <browser mix-bottom="#toast">{toast_ok}</browser>
+                <browser mix-replace="#profile_avatar">
+                    <img id=\"profile_avatar\" class=\"profile-avatar-big\" src=\"{new_src}\" alt=\"Avatar\">
+                </browser>
+                <browser mix-replace="#profile_tag">{nav_html}</browser>
+            """
+
+        # Otherwise, update the text fields
         user_email = x.validate_user_email()
         user_username = x.validate_user_username()
         user_first_name = x.validate_user_first_name()

@@ -1,6 +1,11 @@
 <div class="d-flex flex-row ma-2">
     <div class="w-auto">
-        <img src="{{ url_for('static', filename='images/avatar_1.jpg') }}" class="w-8 rounded-full">
+        {% set avatar = user.user_avatar_path %}
+        {% if avatar.startswith('http') %}
+        <img class="profile-avatar" src="{{ avatar }}" alt="Avatar">
+        {% else %}
+        <img class="profile-avatar" src="{{ url_for('static', filename='images/' ~ avatar) }}" alt="Avatar">
+        {% endif %}
     </div>
     {% include "___post_container.html" %}
 </div>

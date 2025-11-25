@@ -1,0 +1,18 @@
+<div id="profile_tag">
+    {% set avatar = user.user_avatar_path %}
+    {% if avatar and avatar.startswith('http') %}
+    <img id="nav_avatar" class="profile-avatar" src="{{ avatar }}" alt="Avatar">
+    {% else %}
+    <img id="nav_avatar" class="profile-avatar" src="{{ url_for('static', filename='images/' ~ (avatar if avatar else 'unknown.jpg')) }}" alt="Avatar">
+    {% endif %}
+
+    <div>
+        <div class="name">
+            {{ user.user_first_name }}
+        </div>
+        <div class="handle">
+            @{{ user.user_username }}
+        </div>
+    </div>
+    <i class="fa-solid fa-ellipsis option"></i>
+</div>
