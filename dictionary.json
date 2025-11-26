@@ -163,5 +163,15 @@
         "english": "Logging in ...",
         "danish": "Logger ind ...",
         "spanish": "Entrar ..."
+    },
+    "user_deleted": {
+        "english": "This account has been deleted. Please contact support if this is a mistake.",
+        "danish": "Denne konto er slettet. Kontakt support, hvis dette er en fejl.",
+        "spanish": "Esta cuenta ha sido eliminada. Contacte con soporte si es un error."
+    },
+    "account_deleted": {
+        "english": "Your account has been deleted.",
+        "danish": "Din konto er blevet slettet.",
+        "spanish": "Tu cuenta ha sido eliminada."
     }
 }

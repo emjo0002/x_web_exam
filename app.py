@@ -78,6 +78,9 @@ def login(lan = "english"):
             if user["user_verification_key"] != "":
                 raise Exception(x.lans("user_not_verified"), 400)
 
+            if user.get("user_deleted_at", 0):
+                raise Exception(x.lans("user_deleted"), 400)
+
             user.pop("user_password")
 
             user["user_language"] = lan
@@ -156,6 +159,7 @@ def signup(lan = "english"):
             if "Duplicate entry" and user_email in str(ex): 
                 toast_error = render_template("___toast_error.html", message="Email already registered")
                 return f"""<mixhtml mix-update="#toast">{ toast_error }</mixhtml>""", 400
+                
             if "Duplicate entry" and user_username in str(ex): 
                 toast_error = render_template("___toast_error.html", message="Username already registered")
                 return f"""<mixhtml mix-update="#toast">{ toast_error }</mixhtml>""", 400
@@ -239,6 +243,31 @@ def logout():
         return "error"
     finally:
         pass
+
+
+##############################
+@app.post("/api-delete-account")
+def api_delete_account():
+    try:
+        user = session.get("user", "")
+        if not user: return "invalid user", 400
+        user_deleted_at = int(time.time())
+        db, cursor = x.db()
+        q = "UPDATE users SET user_deleted_at = %s WHERE user_pk = %s"
+        cursor.execute(q, (user_deleted_at, user["user_pk"]))
+        db.commit()
+        session.clear()
+        return redirect(url_for('login'))
+    except Exception as ex:
+        ic(ex)
+        if "db" in locals(): db.rollback()
+        toast_error = render_template("___toast_error.html", message=x.lans("system_under_maintenance"))
+        return f"""
+            <browser mix-bottom="#toast">{ toast_error }</browser>
+        """, 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 

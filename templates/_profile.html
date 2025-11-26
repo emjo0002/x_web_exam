@@ -46,3 +46,10 @@
         {{ x.lans('updating_profile') }}
     </button>
 </form>
+
+<form action="{{ url_for('api_delete_account') }}" method="post"
+    onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+    <button type="submit" class="x-dialog__btn" style="background:#dc2626;color:white;margin-top:1rem;">
+        Delete account
+    </button>
+</form>
