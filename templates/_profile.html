@@ -2,10 +2,24 @@
     PROFILE
 </h1>
 
-<form class="x-dialog__form" action="{{ url_for('api_update_profile') }}" mix-post autocomplete="off">
+{% set avatar = user.user_avatar_path %}
+{% if avatar.startswith('http') %}
+<img id="profile_avatar" class="profile-avatar-big" src="{{ avatar }}" alt="Avatar">
+{% else %}
+<img id="profile_avatar" class="profile-avatar-big" src="{{ url_for('static', filename='images/' ~ avatar) }}" alt="Avatar">
+{% endif %}
+
+<form class="x-dialog__form" action="{{ url_for('api_update_profile') }}" mix-post autocomplete="off"
+    enctype="multipart/form-data">
+    <div class="mt-2">
+        <label for="avatar">
+            <span>Upload avatar</span>
+        </label>
+        <input type="file" id="avatar" name="avatar" accept="image/*">
+    </div>
     <div>
         <label for="user_email">
-            <span>{{ x.lans('email') }}}</span>
+            <span>{{ x.lans('email') }}</span>
         </label>
         <input name="user_email" id="user_email" type="text" mix-check="{{ x.REGEX_EMAIL }}"
             value="{{ user.user_email }}">

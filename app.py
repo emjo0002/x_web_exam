@@ -255,7 +255,7 @@ def home_comp():
         tweets = cursor.fetchall()
         ic(tweets)
 
-        html = render_template("_home_comp.html", tweets=tweets)
+        html = render_template("_home_comp.html", tweets=tweets, user=user)
         return f"""<mixhtml mix-update="main">{ html }</mixhtml>"""
     except Exception as ex:
         ic(ex)
@@ -361,27 +361,59 @@ def api_update_profile():
     try:
 
         user = session.get("user", "")
-        lan = session["user"]["user_language"]
         if not user: return "invalid user"
 
-        # Validate
+        # Optional avatar handling
+        filename = None
+        new_src = ""
+        file = request.files.get("avatar")
+        if file and file.filename:
+            from werkzeug.utils import secure_filename
+            allowed = {"jpg", "jpeg", "png", "webp"}
+            filename = secure_filename(file.filename)
+            if "." not in filename or filename.rsplit(".", 1)[1].lower() not in allowed:
+                return "Invalid image format", 400
+            save_path = os.path.join("static", "images", filename)
+            file.save(save_path)
+            new_src = url_for('static', filename=f"images/{filename}") + f"?v={int(time.time())}"
+
+        # Validate text fields
         user_email = x.validate_user_email()
         user_username = x.validate_user_username()
         user_first_name = x.validate_user_first_name()
 
-        # Connect to the database
-        q = "UPDATE users SET user_email = %s, user_username = %s, user_first_name = %s WHERE user_pk = %s"
+        # Single DB update (avatar only if provided)
         db, cursor = x.db()
-        cursor.execute(q, (user_email, user_username, user_first_name, user["user_pk"]))
+        q = (
+            "UPDATE users SET user_email = %s, user_username = %s, user_first_name = %s, "
+            "user_avatar_path = COALESCE(%s, user_avatar_path) WHERE user_pk = %s"
+        )
+        cursor.execute(q, (user_email, user_username, user_first_name, filename, user["user_pk"]))
         db.commit()
+
+        # Update session
+        session["user"]["user_email"] = user_email
+        session["user"]["user_username"] = user_username
+        session["user"]["user_first_name"] = user_first_name
+        if filename:
+            session["user"]["user_avatar_path"] = filename
+
+        # Render nav after session reflects changes
+        nav_html = render_template("___nav_profile_tag.html", user=session["user"])    
 
         # Response to the browser
         toast_ok = render_template("___toast_ok.html", message=x.lans("profile_updated_successfully"))
+        avatar_update = ""
+        if filename:
+            avatar_update = f"""
+                <browser mix-replace="#profile_avatar">
+                    <img id=\"profile_avatar\" class=\"profile-avatar-big\" src=\"{new_src}\" alt=\"Avatar\">
+                </browser>
+            """
         return f"""
             <browser mix-bottom="#toast">{toast_ok}</browser>
-            <browser mix-update="#profile_tag .name">{user_first_name}</browser>
-            <browser mix-update="#profile_tag .handle">{user_username}</browser>
-            
+            <browser mix-replace="#profile_tag">{nav_html}</browser>
+            {avatar_update}
         """, 200
     except Exception as ex:
         ic(ex)
