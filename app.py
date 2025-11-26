@@ -363,7 +363,9 @@ def api_update_profile():
         user = session.get("user", "")
         if not user: return "invalid user"
 
-        # If only uploading a new avatar, keep it minimal
+        # Optional avatar handling
+        filename = None
+        new_src = ""
         file = request.files.get("avatar")
         if file and file.filename:
             from werkzeug.utils import secure_filename
@@ -373,44 +375,45 @@ def api_update_profile():
                 return "Invalid image format", 400
             save_path = os.path.join("static", "images", filename)
             file.save(save_path)
-
-            # Update DB avatar only
-            db, cursor = x.db()
-            q = "UPDATE users SET user_avatar_path = %s WHERE user_pk = %s"
-            cursor.execute(q, (filename, user["user_pk"]))
-            db.commit()
-
-            # Update session and respond with minimal DOM updates
-            session["user"]["user_avatar_path"] = filename
             new_src = url_for('static', filename=f"images/{filename}") + f"?v={int(time.time())}"
-            toast_ok = render_template("___toast_ok.html", message=x.lans("profile_updated_successfully"))
-            nav_html = render_template("___nav_profile_tag.html", user=session["user"])    
-            return f"""
-                <browser mix-bottom="#toast">{toast_ok}</browser>
-                <browser mix-replace="#profile_avatar">
-                    <img id=\"profile_avatar\" class=\"profile-avatar-big\" src=\"{new_src}\" alt=\"Avatar\">
-                </browser>
-                <browser mix-replace="#profile_tag">{nav_html}</browser>
-            """
 
-        # Otherwise, update the text fields
+        # Validate text fields
         user_email = x.validate_user_email()
         user_username = x.validate_user_username()
         user_first_name = x.validate_user_first_name()
 
-        # Connect to the database
-        q = "UPDATE users SET user_email = %s, user_username = %s, user_first_name = %s WHERE user_pk = %s"
+        # Single DB update (avatar only if provided)
         db, cursor = x.db()
-        cursor.execute(q, (user_email, user_username, user_first_name, user["user_pk"]))
+        q = (
+            "UPDATE users SET user_email = %s, user_username = %s, user_first_name = %s, "
+            "user_avatar_path = COALESCE(%s, user_avatar_path) WHERE user_pk = %s"
+        )
+        cursor.execute(q, (user_email, user_username, user_first_name, filename, user["user_pk"]))
         db.commit()
+
+        # Update session
+        session["user"]["user_email"] = user_email
+        session["user"]["user_username"] = user_username
+        session["user"]["user_first_name"] = user_first_name
+        if filename:
+            session["user"]["user_avatar_path"] = filename
+
+        # Render nav after session reflects changes
+        nav_html = render_template("___nav_profile_tag.html", user=session["user"])    
 
         # Response to the browser
         toast_ok = render_template("___toast_ok.html", message=x.lans("profile_updated_successfully"))
+        avatar_update = ""
+        if filename:
+            avatar_update = f"""
+                <browser mix-replace="#profile_avatar">
+                    <img id=\"profile_avatar\" class=\"profile-avatar-big\" src=\"{new_src}\" alt=\"Avatar\">
+                </browser>
+            """
         return f"""
             <browser mix-bottom="#toast">{toast_ok}</browser>
-            <browser mix-update="#profile_tag .name">{user_first_name}</browser>
-            <browser mix-update="#profile_tag .handle">{user_username}</browser>
-            
+            <browser mix-replace="#profile_tag">{nav_html}</browser>
+            {avatar_update}
         """, 200
     except Exception as ex:
         ic(ex)
